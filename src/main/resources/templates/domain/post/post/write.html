@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>글 쓰기</title>
-</head>
-<body>
-    <h1>글 쓰기</h1>
+<h1>글 쓰기</h1>
 
-    <div th:utext="${errorMessage}"></div>
+<div th:utext="${errorMessage}"></div>
 
-    <form method="POST">
-        <input type="text" name="title" placeholder="제목" th:value="${form.title}">
-        <br>
-        <textarea name="content" placeholder="내용" th:text="${form.content}"></textarea>
-        <br>
-        <button type="submit">글쓰기</button>
-    </form>
-</body>
-</html>
+<form method="POST">
+    <input type="text" name="title" placeholder="제목" th:value="${form.title}">
+    <br>
+    <textarea name="content" placeholder="내용" th:text="${form.content}"></textarea>
+    <br>
+    <button type="submit">글쓰기</button>
+</form>
