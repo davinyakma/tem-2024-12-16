@@ -1,8 +1,10 @@
 package com.programmers.tem.domain.post.post.controller;
 
 import com.programmers.tem.domain.post.post.entity.Post;
+import com.programmers.tem.domain.post.post.repository.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,49 +14,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 public class PostController {
-    private List<Post> posts = new ArrayList<>() {{
-        add(
-                Post.builder()
-                        .title("제목1")
-                        .content("내용1")
-                        .build()
-        );
-
-        add(
-                Post.builder()
-                        .title("제목2")
-                        .content("내용2")
-                        .build()
-        );
-
-        add(
-                Post.builder()
-                        .title("제목3")
-                        .content("내용3")
-                        .build()
-        );
-    }};
+    private final PostService postService;
 
     @GetMapping
     public String showList(Model model) {
-        model.addAttribute("posts", posts.reversed());
+        List<Post> posts = postService.findAllByOrderByIdDesc();
+        model.addAttribute("posts", posts);
 
         return "domain/post/post/list";
     }
 
     @GetMapping("/{id}")
     public String showDetail(Model model, @PathVariable long id) {
-        Post post = posts
-                .stream()
-                .filter(p -> p.getId() == id)
-                .findFirst()
-                .orElseThrow();
+        Post post = postService.findById(id).get();
 
         model.addAttribute("post", post);
 
@@ -88,12 +66,7 @@ public class PostController {
             return "domain/post/post/write";
         }
 
-        posts.add(
-                Post.builder()
-                        .title(form.title)
-                        .content(form.content)
-                        .build()
-        );
+        postService.write(form.title, form.content);
 
         return "redirect:/posts";
     }
